@@ -1,3 +1,15 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  background: #e2e2e2;
+}
+
 svg {
+  position: fixed;
   margin-left: 20%;
+}
+
+.container {
+  width: 500px;
+  margin: auto;
+  background: #fff;
 }
