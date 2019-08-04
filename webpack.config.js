@@ -1,6 +1,25 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const fs = require("fs");
 const path = require("path");
+
+function generateHtmlPlugins(templateDir) {
+  const templateFiles = fs.readdirSync(path.resolve(__dirname, templateDir));
+  return templateFiles.map(item => {
+    const parts = item.split(".");
+    const name = parts[0];
+    const extension = parts[1];
+    if (extension === "pug" || extension == "html") {
+      return new HtmlWebpackPlugin({
+        filename: `${name}.html`,
+        template: path.resolve(__dirname, `${templateDir}/${name}.${extension}`),
+        inject: false
+      });
+    }
+  });
+}
+
+const htmlPlugins = generateHtmlPlugins("./src").filter(item => item);
 
 const config = {
   entry: {
@@ -15,13 +34,13 @@ const config = {
     port: 4200
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/index.pug"
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: "./src/index.pug"
+    // }),
     new MiniCssExtractPlugin({
       filename: "styles.css"
     })
-  ],
+  ].concat(htmlPlugins),
   module: {
     rules: [
       {
@@ -39,6 +58,8 @@ const config = {
     ]
   }
 };
+
+// module.exports = config;
 
 module.exports = (env, argv) => {
   // eslint-disable-next-line no-empty
